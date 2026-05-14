@@ -1,0 +1,55 @@
+//- user dashboard — shows the user's reviews with edit and delete buttons
+
+extends layout
+
+block content
+  - pageTitle = 'Dashboard'
+
+  div.dashboard-layout
+
+    aside.dashboard-sidebar
+
+      div.sidebar-user
+        div.sidebar-avatar= user.name.substring(0, 2).toUpperCase()
+        p.sidebar-username= user.name
+        p.sidebar-email= user.email
+
+      nav.sidebar-nav
+        a.sidebar-item.active(href=`/dashboard?userId=${userId}`) ★ My reviews
+
+      div.sidebar-logout
+        a.btn-danger(href="/logout" style="width:100%;text-align:center;display:block;") Log out
+
+    main.dashboard-main
+
+      div.dashboard-welcome
+        h1 Welcome back, #{user.name.split(' ')[0]}
+        p Here is a summary of your activity on CineReview.
+
+      div.stats-row
+        div.stat-card
+          p.stat-label Reviews written
+          p.stat-value= myReviews.length
+
+      div.dash-section
+        div.dash-section-header
+          h3 My reviews
+
+        if myReviews.length === 0
+          p.empty-msg You haven't written any reviews yet.
+            a(href=`/movies?userId=${userId}`)  Browse movies to get started.
+
+        else
+          each review in myReviews
+            div.review-item
+              div.review-item-poster 🎬
+              div.review-item-body
+                p.review-item-title= review.movie ? review.movie.title : 'Unknown movie'
+                span.stars= '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating)
+                p.review-item-snippet= `"${review.body}"`
+              div.review-item-actions
+                a.btn-secondary.btn-small(href=`/reviews/${review._id}/edit?userId=${userId}`) Edit
+                form(action=`/reviews/${review._id}/delete` method="POST" style="display:inline")
+                  input(type="hidden" name="userId" value=userId)
+                  input(type="hidden" name="from" value="dashboard")
+                  button.btn-danger(type="submit" onclick="return confirm('Delete this review?')") Delete

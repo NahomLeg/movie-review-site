@@ -1,0 +1,29 @@
+//- base template that every page extends
+
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title #{pageTitle} - CineReview
+    link(rel="stylesheet" href="/css/style.css")
+
+  body
+    nav.navbar
+      a.navbar-logo(href=`/?userId=${userId}`) Cine
+        span Review
+      div.navbar-links
+        a.nav-link(href=`/movies?userId=${userId}`) Browse
+        if userId && userId !== 'undefined' && userId !== ''
+          a.nav-link(href=`/dashboard?userId=${userId}`) Dashboard
+          a.nav-link(href="/logout") Log out
+        else
+          a.nav-link(href="/login") Login
+          a.btn-primary.btn-small(href="/register") Join free
+
+    block content
+
+    footer.footer
+      p &copy; 2025
+        a(href="/")  CineReview
+        |  — Built by Group 40.

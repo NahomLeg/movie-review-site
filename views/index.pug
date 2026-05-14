@@ -1,0 +1,33 @@
+//- homepage — shows recently added movies
+
+extends layout
+
+block content
+  - pageTitle = 'Home'
+
+  section.hero
+    h1 Discover movies, 
+      em share your take
+    p Join film lovers. Rate, review, and explore movies added by the community.
+    div.hero-buttons
+      a.btn-primary(href="/register") Get started free
+      a.btn-secondary(href=`/movies?userId=${userId}`) Browse movies
+
+  section.section
+    div.section-header
+      h2 Recently added
+      a(href=`/movies?userId=${userId}`) See all &rarr;
+
+    if movies.length === 0
+      p.empty-msg No movies yet.
+
+    else
+      div.movie-grid
+        each movie in movies
+          a.movie-card(href=`/movies/${movie._id}?userId=${userId}`)
+            img.movie-poster(src=`/images/${movie.poster}` alt=movie.title)
+            div.movie-card-body
+              p.movie-card-title= movie.title
+              p.movie-card-meta= `${movie.year} · ${movie.director}`
+              div.movie-card-genres
+                span.badge= movie.genre

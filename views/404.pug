@@ -1,0 +1,12 @@
+//- 404 not found page
+
+extends layout
+
+block content
+  - pageTitle = 'Not Found'
+  - var userId = ''
+
+  main.detail-wrapper(style="text-align:center; padding-top: 80px;")
+    h1 404
+    p.subtitle= message || 'Page not found.'
+    a.btn-primary(href="/") Go home

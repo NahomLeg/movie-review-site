@@ -1,0 +1,57 @@
+//- browse all movies with search and genre filter
+
+extends layout
+
+block content
+  - pageTitle = 'Browse Movies'
+
+  div.browse-layout
+
+    aside.filter-sidebar
+      p.filter-sidebar-title Filters
+
+      form(action="/movies" method="GET")
+
+        //- carry userId through the filter form
+        input(type="hidden" name="userId" value=userId)
+
+        div.filter-group
+          p.filter-group-label Search
+          input(type="text" name="search" placeholder="Search by title..." value=search)
+
+        div.filter-group
+          p.filter-group-genre Genre
+          each g in ['Action', 'Drama', 'Sci-Fi', 'Comedy', 'Thriller', 'Romance', 'Horror', 'Crime', 'Animation']
+            label.filter-option
+              input(type="radio" name="genre" value=g checked=(genre === g))
+              |  #{g}
+          label.filter-option
+            input(type="radio" name="genre" value="" checked=(genre === ''))
+            |  All genres
+
+        button.filter-apply-btn(type="submit") Apply filters
+        a.filter-clear-link(href=`/movies?userId=${userId}`) Clear all
+
+    main.browse-main
+
+      p.results-count
+        if movies.length === 0
+          | No movies found.
+        else
+          | Showing #{movies.length} movie#{movies.length !== 1 ? 's' : ''}
+
+      if movies.length === 0
+        div.empty-state
+          p Nothing matched your search.
+          a.btn-secondary(href=`/movies?userId=${userId}`) Clear filters
+
+      else
+        div.movie-grid
+          each movie in movies
+            a.movie-card(href=`/movies/${movie._id}?userId=${userId}`)
+              img.movie-poster(src=`/images/${movie.poster}` alt=movie.title)
+              div.movie-card-body
+                p.movie-card-title= movie.title
+                p.movie-card-meta= `${movie.year} · ${movie.director}`
+                div.movie-card-genres
+                  span.badge= movie.genre

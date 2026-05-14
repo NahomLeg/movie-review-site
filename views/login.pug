@@ -1,0 +1,40 @@
+//- login page
+
+extends layout
+
+block content
+  - pageTitle = 'Login'
+  - var userId = ''
+
+  main.auth-page
+    div.auth-box
+
+      a.auth-logo(href="/") Cine
+        span Review
+      p.auth-tagline Welcome back, film lover.
+
+      h1 Log in
+      p.subtitle Pick up right where you left off.
+
+      if error
+        p.form-error= error
+
+      form(action="/login" method="POST" novalidate id="loginForm")
+
+        div.form-group
+          label(for="email") Email address
+          input(type="email" id="email" name="email" placeholder="john@example.com" autocomplete="email")
+          span.field-error#emailError
+
+        div.form-group
+          label(for="password") Password
+          input(type="password" id="password" name="password" placeholder="Your password" autocomplete="current-password")
+          span.field-error#passwordError
+
+        button.btn-primary.auth-btn(type="submit") Log in
+
+      div.auth-footer
+        | Don't have an account? 
+        a(href="/register") Register free
+
+  script(src="/js/validate-login.js")

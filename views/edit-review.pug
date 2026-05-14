@@ -1,0 +1,41 @@
+//- edit an existing review
+
+extends layout
+
+block content
+  - pageTitle = 'Edit Review'
+
+  main.detail-wrapper
+
+    h1 Edit your review
+    p.subtitle For: 
+      a(href=`/movies/${review.movie._id}?userId=${userId}`)= review.movie.title
+
+    if error
+      p.form-error= error
+
+    form(action=`/reviews/${review._id}/edit` method="POST" novalidate id="reviewForm")
+
+      //- carry userId through the form
+      input(type="hidden" name="userId" value=userId)
+
+      div.form-group
+        label(for="rating") Your rating
+        select(id="rating" name="rating")
+          option(value="5" selected=(review.rating === 5)) ★★★★★ — 5 stars
+          option(value="4" selected=(review.rating === 4)) ★★★★☆ — 4 stars
+          option(value="3" selected=(review.rating === 3)) ★★★☆☆ — 3 stars
+          option(value="2" selected=(review.rating === 2)) ★★☆☆☆ — 2 stars
+          option(value="1" selected=(review.rating === 1)) ★☆☆☆☆ — 1 star
+        span.field-error#ratingError
+
+      div.form-group
+        label(for="body") Your review
+        textarea(id="body" name="body" rows="5")= review.body
+        span.field-error#bodyError
+
+      div.form-row-buttons
+        button.btn-primary(type="submit") Save changes
+        a.btn-secondary(href=`/movies/${review.movie._id}?userId=${userId}`) Cancel
+
+  script(src="/js/validate-review.js")

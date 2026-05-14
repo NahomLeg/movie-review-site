@@ -1,0 +1,107 @@
+//- shows one movie and all its reviews
+//- also has the form to write a new review
+
+extends layout
+
+block content
+  - pageTitle = movie.title
+
+  main.detail-wrapper
+
+    nav.path
+      a(href=`/?userId=${userId}`) Home
+      span.path-sep ▶
+      a(href=`/movies?userId=${userId}`) Browse
+      span.path-sep ▶
+      span= movie.title
+
+    div.movie-hero
+      img.movie-hero-poster(src=`/images/${movie.poster}` alt=movie.title)
+
+      div.movie-hero-info
+        h1= movie.title
+
+        p.movie-meta
+          = `${movie.year}`
+          if movie.runtime
+            = ` | ${movie.runtime}m`
+          = ` | Directed by ${movie.director}`
+
+        div.movie-genres
+          span.badge= movie.genre
+
+        if reviews.length > 0
+          p.rating-info= `${reviews.length} review${reviews.length !== 1 ? 's' : ''}`
+        else
+          p.rating-info No reviews yet — be the first!
+
+    if movie.description
+      p.movie-description= movie.description
+
+    //- only show review form if userId is a real value
+    if userId && userId !== '' && userId !== 'undefined'
+      if userReview
+        div.already-reviewed
+          p You already reviewed this movie.
+
+      else
+        div.write-review-box
+          h2 Write a review
+          form(action="/reviews/add" method="POST" novalidate id="reviewForm")
+            input(type="hidden" name="movieId" value=movie._id)
+            input(type="hidden" name="userId" value=userId)
+
+            div.form-group
+              label(for="rating") Your rating (1–5 stars)
+              select(id="rating" name="rating")
+                option(value="5") ★★★★★ — 5 stars
+                option(value="4") ★★★★☆ — 4 stars
+                option(value="3") ★★★☆☆ — 3 stars
+                option(value="2") ★★☆☆☆ — 2 stars
+                option(value="1") ★☆☆☆☆ — 1 star
+              span.field-error#ratingError
+
+            div.form-group
+              label(for="body") Your review
+              textarea(id="body" name="body" placeholder="What did you think of this movie?" rows="4")
+              span.field-error#bodyError
+
+            button.btn-primary(type="submit") Post review
+
+    else
+      div.login-prompt
+        p Have an opinion on this film? Share it with the community.
+        div.btn-row
+          a.btn-secondary.btn-small(href="/login") Login
+          a.btn-primary.btn-small(href="/register") Join us
+
+    div.reviews-header
+      h2 Community reviews
+        if reviews.length > 0
+          span.review-count  (#{reviews.length})
+
+    if reviews.length === 0
+      p.empty-msg No reviews yet. Be the first to write one!
+
+    else
+      div.review-list
+        each review in reviews
+          div.review-card
+            div.review-card-top
+              div.avatar= review.authorName.substring(0, 2).toUpperCase()
+              div.reviewer-details
+                p.name= review.authorName
+                p.date= new Date(review.createdAt).toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' })
+              div
+                p.review-score= review.rating + '.0'
+
+            p.review-text= review.body
+
+            if userId && userId !== '' && userId !== 'undefined' && review.author.toString() === userId
+              div.review-actions
+                a.btn-secondary.btn-small(href=`/reviews/${review._id}/edit?userId=${userId}`) Edit
+                form(action=`/reviews/${review._id}/delete` method="POST" style="display:inline")
+                  input(type="hidden" name="userId" value=userId)
+                  button.btn-danger.btn-small(type="submit" onclick="return confirm('Delete your review?')") Delete
+
+  script(src="/js/validate-review.js")

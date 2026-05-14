@@ -1,0 +1,50 @@
+//- registration page
+
+extends layout
+
+block content
+  - pageTitle = 'Register'
+  - var userId = ''
+
+  main.auth-page
+    div.auth-box
+
+      a.auth-logo(href="/") Cine
+        span Review
+      p.auth-tagline Join the community. Start reviewing.
+
+      h1 Create account
+      p.subtitle Free forever. No credit card needed.
+
+      if error
+        p.form-error= error
+
+      form(action="/register" method="POST" novalidate id="registerForm")
+
+        div.form-group
+          label(for="name") Full name
+          input(type="text" id="name" name="name" placeholder="John Doe" autocomplete="name")
+          span.field-error#nameError
+
+        div.form-group
+          label(for="email") Email address
+          input(type="email" id="email" name="email" placeholder="john@example.com" autocomplete="email")
+          span.field-error#emailError
+
+        div.form-group
+          label(for="password") Password
+          input(type="password" id="password" name="password" placeholder="At least 8 characters" autocomplete="new-password")
+          span.field-error#passwordError
+
+        div.form-group
+          label(for="confirmPassword") Confirm password
+          input(type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter your password" autocomplete="new-password")
+          span.field-error#confirmPasswordError
+
+        button.btn-primary.auth-btn(type="submit") Create account
+
+      div.auth-footer
+        | Already have an account? 
+        a(href="/login") Log in
+
+  script(src="/js/validate-register.js")
